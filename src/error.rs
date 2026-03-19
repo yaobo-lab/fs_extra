@@ -5,7 +5,7 @@ use std::io::Error as IoError;
 use std::io::ErrorKind as IoErrorKind;
 use std::path::StripPrefixError;
 
-/// A list specifying general categories of fs_extra error.
+/// A list specifying general categories of fs_extra_rs error.
 #[derive(Debug)]
 pub enum ErrorKind {
     /// An entity was not found.
@@ -30,7 +30,7 @@ pub enum ErrorKind {
     StripPrefix(StripPrefixError),
     /// Any OsString error.
     OsString(OsString),
-    /// Any fs_extra error not part of this list.
+    /// Any fs_extra_rs error not part of this list.
     Other,
 }
 
@@ -53,16 +53,16 @@ impl ErrorKind {
     }
 }
 
-/// A specialized Result type for fs_extra operations.
+/// A specialized Result type for fs_extra_rs operations.
 ///
-/// This typedef is generally used to avoid writing out fs_extra::Error directly
+/// This typedef is generally used to avoid writing out fs_extra_rs::Error directly
 /// and is otherwise a direct mapping to Result.
 ///
 ///#Examples
 ///
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::create;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::create;
 ///
 ///fn get_string() -> io::Result<()> {
 ///
@@ -73,7 +73,7 @@ impl ErrorKind {
 /// ```
 pub type Result<T> = ::std::result::Result<T, Error>;
 
-/// The error type for fs_extra operations with files and folder.
+/// The error type for fs_extra_rs operations with files and folder.
 ///
 /// Errors mostly originate from the underlying OS, but custom instances of
 /// `Error` can be created with crafted error messages and a particular value of
@@ -88,13 +88,13 @@ pub struct Error {
 }
 
 impl Error {
-    /// Create a new fs_extra error from a kind of error error as well as an arbitrary error payload.
+    /// Create a new fs_extra_rs error from a kind of error error as well as an arbitrary error payload.
     ///
     ///#Examples
     /// ```rust,ignore
     ///
-    /// extern crate fs_extra;
-    /// use fs_extra::error::{Error, ErrorKind};
+    /// extern crate fs_extra_rs;
+    /// use fs_extra_rs::error::{Error, ErrorKind};
     ///
     /// errors can be created from strings
     /// let custom_error = Error::new(ErrorKind::Other, "Other Error!");
@@ -149,7 +149,7 @@ impl From<IoError> for Error {
             IoErrorKind::Interrupted => err_kind = ErrorKind::Interrupted,
             IoErrorKind::Other => err_kind = ErrorKind::Other,
             _ => {
-                let err_msg= format!("Io error :{}", err.to_string());
+                let err_msg = format!("Io error :{}", err.to_string());
                 err_kind = ErrorKind::Io(err);
                 return Error::new(err_kind, &err_msg);
             }

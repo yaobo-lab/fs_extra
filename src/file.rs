@@ -81,8 +81,8 @@ pub struct TransitProcess {
 /// # Example
 ///
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::file::copy;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::file::copy;
 ///
 /// let options = CopyOptions::new(); //Initialize default values for CopyOptions
 /// copy("dir1/foo.txt", "dir2/bar.txt", &options)?; // Copy dir1/foo.txt to dir2/bar.txt
@@ -142,8 +142,8 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::file::copy_with_progress;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::file::copy_with_progress;
 ///
 /// let options = CopyOptions::new(); //Initialize default values for CopyOptions
 /// let handle = |process_info: TransitProcess|  println!("{}", process_info.total_bytes);
@@ -235,8 +235,8 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::file::move_file;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::file::move_file;
 ///
 /// let options = CopyOptions::new(); //Initialize default values for CopyOptions
 /// move_file("dir1/foo.txt", "dir2/foo.txt", &options)?; // Move dir1/foo.txt to dir2/foo.txt
@@ -274,8 +274,8 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::file::move_file;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::file::move_file;
 ///
 /// let options = CopyOptions::new(); //Initialize default values for CopyOptions
 /// let handle = |process_info: TransitProcess|  println!("{}", process_info.total_bytes);
@@ -318,8 +318,8 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::file::remove;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::file::remove;
 ///
 /// remove("foo.txt" )?; // Remove foo.txt
 ///
@@ -348,8 +348,8 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::file::read_to_string;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::file::read_to_string;
 ///
 /// let file_content = read_to_string("foo.txt" )?; // Get file content from foo.txt
 /// println!("{}", file_content);
@@ -388,8 +388,8 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::file::read_to_string;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::file::read_to_string;
 ///
 /// write_all("foo.txt", "contents" )?; // Create file foo.txt and send content inside
 ///

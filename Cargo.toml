@@ -6,9 +6,9 @@ description = "Expanding std::fs and std::io. Recursively copy folders with info
 license = "MIT"
 authors = ["Denis Kurilenko <webdesus@gmail.com>"]
 keywords = ["filesystem", "recursion", "copy", "dir", "file"]
-homepage = "https://github.com/webdesus/fs_extra"
-documentation = "https://docs.rs/fs_extra"
-repository = "https://github.com/webdesus/fs_extra"
+homepage = "https://github.com/webdesus/fs_extra_rs"
+documentation = "https://docs.rs/fs_extra_rs"
+repository = "https://github.com/webdesus/fs_extra_rs"
 include = [
     "**/*.rs",
     "Cargo.toml",

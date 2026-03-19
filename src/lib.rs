@@ -8,7 +8,7 @@ macro_rules! err {
     };
 }
 
-/// The error type for fs_extra operations on files and directories.
+/// The error type for fs_extra_rs operations on files and directories.
 pub mod error;
 /// This module includes additional methods for working with files.
 ///
@@ -21,9 +21,9 @@ pub mod error;
 /// use std::{thread, time};
 /// use std::sync::mpsc::{self, TryRecvError};
 ///
-/// extern crate fs_extra;
-/// use fs_extra::file::*;
-/// use fs_extra::error::*;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::file::*;
+/// use fs_extra_rs::error::*;
 ///
 /// fn example_copy() -> Result<()> {
 ///     let path_from = Path::new("./temp");
@@ -31,8 +31,8 @@ pub mod error;
 ///     let test_file = (path_from.join("test_file.txt"), path_to.join("test_file.txt"));
 ///
 ///
-///     fs_extra::dir::create_all(&path_from, true)?;
-///     fs_extra::dir::create_all(&path_to, true)?;
+///     fs_extra_rs::dir::create_all(&path_from, true)?;
+///     fs_extra_rs::dir::create_all(&path_to, true)?;
 ///
 ///     write_all(&test_file.0, "test_data")?;
 ///     assert!(test_file.0.exists());
@@ -91,9 +91,9 @@ pub mod file;
 /// use std::{thread, time};
 /// use std::sync::mpsc::{self, TryRecvError};
 ///
-/// extern crate fs_extra;
-/// use fs_extra::dir::*;
-/// use fs_extra::error::*;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::*;
+/// use fs_extra_rs::error::*;
 ///
 /// fn example_copy() -> Result<()> {
 ///
@@ -107,8 +107,8 @@ pub mod file;
 ///
 ///     create_all(&sub, true)?;
 ///     create_all(&path_to, true)?;
-///     fs_extra::file::write_all(&file1, "content1")?;
-///     fs_extra::file::write_all(&file2, "content2")?;
+///     fs_extra_rs::file::write_all(&file1, "content1")?;
+///     fs_extra_rs::file::write_all(&file2, "content2")?;
 ///
 ///     assert!(dir.exists());
 ///     assert!(sub.exists());
@@ -175,8 +175,8 @@ use std::path::Path;
 /// # Example
 ///
 /// ```rust,ignore
-///  extern crate fs_extra;
-///  use fs_extra::dir::copy;
+///  extern crate fs_extra_rs;
+///  use fs_extra_rs::dir::copy;
 ///
 ///  let options = dir::CopyOptions::new(); //Initialize default values for CopyOptions
 ///
@@ -271,13 +271,13 @@ impl Clone for TransitProcess {
 /// # Example
 /// ```rust,ignore
 ///
-///  extern crate fs_extra;
-///  use fs_extra::dir::copy;
+///  extern crate fs_extra_rs;
+///  use fs_extra_rs::dir::copy;
 ///
 ///  let options = dir::CopyOptions::new(); //Initialize default values for CopyOptions
 ///  let handle = |process_info: TransitProcess| {
 ///     println!("{}", process_info.total_bytes);
-///     fs_extra::dir::TransitProcessResult::ContinueOrAbort
+///     fs_extra_rs::dir::TransitProcessResult::ContinueOrAbort
 ///  }
 ///  // copy dir1 and file1.txt to target/dir1 and target/file1.txt
 ///  let mut from_paths = Vec::new();
@@ -481,8 +481,8 @@ where
 /// # Example
 ///
 /// ```rust,ignore
-///  extern crate fs_extra;
-///  use fs_extra::dir::copy;
+///  extern crate fs_extra_rs;
+///  use fs_extra_rs::dir::copy;
 ///
 ///  let options = dir::CopyOptions::new(); //Initialize default values for CopyOptions
 ///
@@ -583,13 +583,13 @@ where
 /// # Example
 ///
 /// ```rust,ignore
-///  extern crate fs_extra;
-///  use fs_extra::dir::copy;
+///  extern crate fs_extra_rs;
+///  use fs_extra_rs::dir::copy;
 ///
 ///  let options = dir::CopyOptions::new(); //Initialize default values for CopyOptions
 ///  let handle = |process_info: TransitProcess| {
 ///     println!("{}", process_info.total_bytes);
-///     fs_extra::dir::TransitProcessResult::ContinueOrAbort
+///     fs_extra_rs::dir::TransitProcessResult::ContinueOrAbort
 ///  }
 ///  // move dir1 and file1.txt to target/dir1 and target/file1.txt
 ///  let mut from_paths = Vec::new();

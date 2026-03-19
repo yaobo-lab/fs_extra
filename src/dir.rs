@@ -247,8 +247,8 @@ pub struct LsResult {
 /// #Examples
 ///
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::{get_details_entry, DirEntryAttr};
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::{get_details_entry, DirEntryAttr};
 /// use std::collections::{HashMap, HashSet};
 ///
 /// let mut config = HashSet::new();
@@ -425,8 +425,8 @@ where
 /// #Examples
 ///
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::{ls, DirEntryAttr, LsResult};
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::{ls, DirEntryAttr, LsResult};
 /// use std::collections::HashSet;
 ///
 /// let mut config = HashSet::new();
@@ -481,8 +481,8 @@ where
 /// #Examples
 ///
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::create;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::create;
 ///
 /// create("dir", false); // create directory
 /// ```
@@ -516,8 +516,8 @@ where
 /// #Examples
 ///
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::create_all;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::create_all;
 ///
 /// create_all("/some/dir", false); // create directory some and dir
 pub fn create_all<P>(path: P, erase: bool) -> Result<()>
@@ -546,8 +546,8 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::copy;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::copy;
 ///
 /// let options = CopyOptions::new(); //Initialize default values for CopyOptions
 /// // options.mirror_copy = true; // To mirror copy the whole structure of the source directory
@@ -657,8 +657,8 @@ where
 ///
 /// # Examples
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::get_dir_content;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::get_dir_content;
 ///
 /// let dir_content = get_dir_content("dir")?;
 /// for directory in dir_content.directories {
@@ -691,8 +691,8 @@ where
 ///
 /// # Examples
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::{DirOptions, get_dir_content2};
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::{DirOptions, get_dir_content2};
 ///
 /// let mut options = DirOptions::new();
 /// options.depth = 3; // Get 3 levels of folder.
@@ -777,8 +777,8 @@ where
 ///
 /// # Examples
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::get_size;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::get_size;
 ///
 /// let folder_size = get_size("dir")?;
 /// println!("{}", folder_size); // print directory size in bytes
@@ -831,13 +831,13 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::copy;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::copy;
 ///
 /// let options = CopyOptions::new(); //Initialize default values for CopyOptions
 /// let handle = |process_info: TransitProcess|  {
 ///     println!("{}", process_info.total_bytes);
-///     fs_extra::dir::TransitProcessResult::ContinueOrAbort
+///     fs_extra_rs::dir::TransitProcessResult::ContinueOrAbort
 /// }
 /// // copy source/dir1 to target/dir1
 /// copy_with_progress("source/dir1", "target/dir1", &options, handle)?;
@@ -1049,8 +1049,8 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::move_dir;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::move_dir;
 ///
 /// let options = CopyOptions::new(); //Initialize default values for CopyOptions
 ///
@@ -1169,13 +1169,13 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::move_dir_with_progress;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::move_dir_with_progress;
 ///
 /// let options = CopyOptions::new(); //Initialize default values for CopyOptions
 /// let handle = |process_info: TransitProcess| {
 ///     println!("{}", process_info.total_bytes);
-///     fs_extra::dir::TransitProcessResult::ContinueOrAbort
+///     fs_extra_rs::dir::TransitProcessResult::ContinueOrAbort
 /// }
 ///
 /// // move source/dir1 to target/dir1
@@ -1384,8 +1384,8 @@ where
 ///
 /// # Example
 /// ```rust,ignore
-/// extern crate fs_extra;
-/// use fs_extra::dir::remove;
+/// extern crate fs_extra_rs;
+/// use fs_extra_rs::dir::remove;
 ///
 /// remove("source/dir1"); // remove dir1
 /// ```

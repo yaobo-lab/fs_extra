@@ -4,9 +4,9 @@ use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 use std::thread;
 
-extern crate fs_extra;
-use fs_extra::error::*;
-use fs_extra::file::*;
+extern crate fs_extra_rs;
+use fs_extra_rs::error::*;
+use fs_extra_rs::file::*;
 
 const TEST_FOLDER: &'static str = "./tests/temp/file";
 
@@ -25,7 +25,7 @@ fn it_read_and_write_work() {
     let mut test_file = PathBuf::from(TEST_FOLDER);
     test_file.push("it_read_and_write_work");
     test_file.push("test.txt");
-    fs_extra::dir::create_all(test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(test_file.parent().unwrap(), true).unwrap();
     let content1 = "test_1";
     let content2 = "test_2";
     write_all(&test_file, &content1).unwrap();
@@ -42,7 +42,7 @@ fn it_read_not_exist_file() {
     let mut test_file = PathBuf::from(TEST_FOLDER);
     test_file.push("it_read_not_exist_file");
     test_file.push("test.txt");
-    fs_extra::dir::create_all(test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(test_file.parent().unwrap(), true).unwrap();
     assert!(!test_file.exists());
     match read_to_string(&test_file) {
         Ok(_) => panic!("should be error"),
@@ -57,7 +57,7 @@ fn it_read_not_exist_file() {
 fn it_read_not_file() {
     let mut test_file = PathBuf::from(TEST_FOLDER);
     test_file.push("it_read_not_file");
-    fs_extra::dir::create_all(&test_file, true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file, true).unwrap();
     match read_to_string(&test_file) {
         Ok(_) => panic!("should be error"),
         Err(err) => match err.kind {
@@ -72,7 +72,7 @@ fn it_write_not_file() {
     let mut test_file = PathBuf::from(TEST_FOLDER);
     test_file.push("it_write_not_file");
     test_file.push("test.txt");
-    fs_extra::dir::create_all(test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(test_file.parent().unwrap(), true).unwrap();
     assert!(!test_file.exists());
     test_file.pop();
     match write_all(test_file, "content") {
@@ -89,7 +89,7 @@ fn it_remove_file() {
     let mut test_file = PathBuf::from(TEST_FOLDER);
     test_file.push("it_remove_file");
     test_file.push("test.txt");
-    fs_extra::dir::create_all(test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(test_file.parent().unwrap(), true).unwrap();
     write_all(&test_file, "test").unwrap();
     assert!(test_file.exists());
     remove(&test_file).unwrap();
@@ -104,8 +104,8 @@ fn it_copy_work() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     assert!(test_file.exists());
@@ -121,13 +121,13 @@ fn it_copy_work() {
 #[test]
 fn it_copy_not_file() {
     let mut test_file = PathBuf::from(TEST_FOLDER);
-    test_file.push("it_copy_work");
+    test_file.push("it_copy_not_file");
     let mut test_file_out = test_file.clone();
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     assert!(test_file.exists());
@@ -159,8 +159,8 @@ fn it_copy_source_not_exist() {
     test_file.push("test1.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     assert!(!test_file.exists());
     let options = CopyOptions::new();
@@ -189,8 +189,8 @@ fn it_copy_exist_overwrite() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -205,7 +205,7 @@ fn it_copy_exist_overwrite() {
             assert_eq!(read_to_string(test_file_out).unwrap(), "test_data2");
             ()
         }
-        Err(err) => panic!(err.to_string()),
+        Err(err) => panic!("{}", err.to_string()),
     }
 }
 
@@ -217,8 +217,8 @@ fn it_copy_exist_not_overwrite() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -245,8 +245,8 @@ fn it_copy_exist_skip_exist() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -271,8 +271,8 @@ fn it_copy_exist_overwrite_and_skip_exist() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -288,7 +288,7 @@ fn it_copy_exist_overwrite_and_skip_exist() {
             assert_eq!(read_to_string(test_file_out).unwrap(), "test_data2");
             ()
         }
-        Err(err) => panic!(err.to_string()),
+        Err(err) => panic!("{}", err.to_string()),
     }
 }
 
@@ -300,8 +300,8 @@ fn it_copy_with_progress_work() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     assert!(test_file.exists());
@@ -334,8 +334,8 @@ fn it_copy_progress_not_file() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     assert!(test_file.exists());
@@ -368,8 +368,8 @@ fn it_copy_with_progress_work_dif_buf_size() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data_").unwrap();
     assert!(test_file.exists());
@@ -418,8 +418,8 @@ fn it_copy_with_progress_source_not_exist() {
     test_file.push("test1.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     assert!(!test_file.exists());
     let options = CopyOptions::new();
@@ -452,8 +452,8 @@ fn it_copy_with_progress_exist_overwrite() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -471,7 +471,7 @@ fn it_copy_with_progress_exist_overwrite() {
             assert_eq!(read_to_string(test_file_out).unwrap(), "test_data2");
             ()
         }
-        Err(err) => panic!(err.to_string()),
+        Err(err) => panic!("{}", err.to_string()),
     }
 }
 
@@ -483,8 +483,8 @@ fn it_copy_with_progress_exist_not_overwrite() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -515,8 +515,8 @@ fn it_copy_with_progress_exist_skip_exist() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -544,8 +544,8 @@ fn it_copy_with_progress_exist_overwrite_and_skip_exist() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -564,7 +564,7 @@ fn it_copy_with_progress_exist_overwrite_and_skip_exist() {
             assert_eq!(read_to_string(test_file_out).unwrap(), "test_data2");
             ()
         }
-        Err(err) => panic!(err.to_string()),
+        Err(err) => panic!("{}", err.to_string()),
     }
 }
 
@@ -576,8 +576,8 @@ fn it_move_work() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     assert!(test_file.exists());
@@ -596,13 +596,13 @@ fn it_move_work() {
 #[test]
 fn it_move_not_file() {
     let mut test_file = PathBuf::from(TEST_FOLDER);
-    test_file.push("it_move_work");
+    test_file.push("it_move_not_file");
     let mut test_file_out = test_file.clone();
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     assert!(test_file.exists());
@@ -634,8 +634,8 @@ fn it_move_source_not_exist() {
     test_file.push("test1.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     assert!(!test_file.exists());
     let options = CopyOptions::new();
@@ -665,8 +665,8 @@ fn it_move_exist_overwrite() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -681,7 +681,7 @@ fn it_move_exist_overwrite() {
             assert_eq!(read_to_string(test_file_out).unwrap(), "test_data2");
             ()
         }
-        Err(err) => panic!(err.to_string()),
+        Err(err) => panic!("{}", err.to_string()),
     }
 }
 
@@ -693,8 +693,8 @@ fn it_move_exist_not_overwrite() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -722,8 +722,8 @@ fn it_move_exist_skip_exist() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -748,8 +748,8 @@ fn it_move_exist_overwrite_and_skip_exist() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -765,7 +765,7 @@ fn it_move_exist_overwrite_and_skip_exist() {
             assert_eq!(read_to_string(test_file_out).unwrap(), "test_data2");
             ()
         }
-        Err(err) => panic!(err.to_string()),
+        Err(err) => panic!("{}", err.to_string()),
     }
 }
 
@@ -777,8 +777,8 @@ fn it_move_with_progress_work() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     assert!(test_file.exists());
@@ -814,8 +814,8 @@ fn it_move_progress_not_file() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     assert!(test_file.exists());
@@ -848,8 +848,8 @@ fn it_move_with_progress_work_dif_buf_size() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data_").unwrap();
     assert!(test_file.exists());
@@ -885,8 +885,8 @@ fn it_move_with_progress_source_not_exist() {
     test_file.push("test1.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     assert!(!test_file.exists());
     let options = CopyOptions::new();
@@ -919,8 +919,8 @@ fn it_move_with_progress_exist_overwrite() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -938,7 +938,7 @@ fn it_move_with_progress_exist_overwrite() {
             assert_eq!(read_to_string(test_file_out).unwrap(), "test_data2");
             ()
         }
-        Err(err) => panic!(err.to_string()),
+        Err(err) => panic!("{}", err.to_string()),
     }
 }
 
@@ -950,8 +950,8 @@ fn it_move_with_progress_exist_not_overwrite() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -982,8 +982,8 @@ fn it_move_with_progress_exist_skip_exist() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -1011,8 +1011,8 @@ fn it_move_with_progress_exist_overwrite_and_skip_exist() {
     test_file.push("test.txt");
     test_file_out.push("out");
     test_file_out.push("test.txt");
-    fs_extra::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
-    fs_extra::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file.parent().unwrap(), true).unwrap();
+    fs_extra_rs::dir::create_all(&test_file_out.parent().unwrap(), true).unwrap();
 
     write_all(&test_file, "test_data").unwrap();
     let mut options = CopyOptions::new();
@@ -1032,6 +1032,6 @@ fn it_move_with_progress_exist_overwrite_and_skip_exist() {
             assert_eq!(read_to_string(test_file_out).unwrap(), "test_data2");
             ()
         }
-        Err(err) => panic!(err.to_string()),
+        Err(err) => panic!("{}", err.to_string()),
     }
 }

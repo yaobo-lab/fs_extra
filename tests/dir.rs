@@ -1,4 +1,3 @@
-
 #![allow(non_fmt_panics)]
 
 use std::collections::HashSet;
@@ -7,17 +6,17 @@ use std::path::{Path, PathBuf};
 use std::sync::mpsc::{self, TryRecvError};
 use std::thread;
 
-extern crate fs_extra;
-use fs_extra::dir::*;
-use fs_extra::error::*;
+extern crate fs_extra_rs;
+use fs_extra_rs::dir::*;
+use fs_extra_rs::error::*;
 
 fn files_eq<P, Q>(file1: P, file2: Q) -> bool
 where
     P: AsRef<Path>,
     Q: AsRef<Path>,
 {
-    let content1 = fs_extra::file::read_to_string(file1).unwrap();
-    let content2 = fs_extra::file::read_to_string(file2).unwrap();
+    let content1 = fs_extra_rs::file::read_to_string(file1).unwrap();
+    let content2 = fs_extra_rs::file::read_to_string(file2).unwrap();
     content1 == content2
 }
 
@@ -135,7 +134,7 @@ fn it_create_exist_folder() {
     file_path.push("test.txt");
     assert!(!file_path.exists());
     let content = "test_content";
-    fs_extra::file::write_all(&file_path, &content).unwrap();
+    fs_extra_rs::file::write_all(&file_path, &content).unwrap();
     assert!(file_path.exists());
 
     match create(&test_dir, false) {
@@ -144,7 +143,7 @@ fn it_create_exist_folder() {
             ErrorKind::AlreadyExists => {
                 assert!(test_dir.exists());
                 assert!(file_path.exists());
-                let new_content = fs_extra::file::read_to_string(file_path).unwrap();
+                let new_content = fs_extra_rs::file::read_to_string(file_path).unwrap();
                 assert_eq!(new_content, content);
             }
             _ => panic!("Wrong error"),
@@ -166,7 +165,7 @@ fn it_create_erase_exist_folder() {
     let mut file_path = test_dir.clone();
     file_path.push("test.txt");
     assert!(!file_path.exists());
-    fs_extra::file::write_all(&file_path, "test_content").unwrap();
+    fs_extra_rs::file::write_all(&file_path, "test_content").unwrap();
     assert!(file_path.exists());
 
     create(&test_dir, true).unwrap();
@@ -189,13 +188,13 @@ fn it_create_all_exist_folder() {
     file_path.push("test.txt");
     assert!(!file_path.exists());
     let content = "test_content";
-    fs_extra::file::write_all(&file_path, &content).unwrap();
+    fs_extra_rs::file::write_all(&file_path, &content).unwrap();
     assert!(file_path.exists());
 
     create_all(&test_dir, false).unwrap();
     assert!(test_dir.exists());
     assert!(file_path.exists());
-    let new_content = fs_extra::file::read_to_string(file_path).unwrap();
+    let new_content = fs_extra_rs::file::read_to_string(file_path).unwrap();
     assert_eq!(new_content, content);
 }
 
@@ -213,7 +212,7 @@ fn it_create_all_erase_exist_folder() {
     let mut file_path = test_dir.clone();
     file_path.push("test.txt");
     assert!(!file_path.exists());
-    fs_extra::file::write_all(&file_path, "test_content").unwrap();
+    fs_extra_rs::file::write_all(&file_path, "test_content").unwrap();
     assert!(file_path.exists());
 
     create_all(&test_dir, true).unwrap();
@@ -245,7 +244,7 @@ fn it_remove_not_exist() {
         Ok(_) => {
             assert!(!test_dir.exists());
         }
-        Err(err) => panic!(err.to_string()),
+        Err(err) => panic!("{}", err.to_string()),
     }
 }
 
@@ -266,7 +265,7 @@ fn it_copy_work() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -275,7 +274,7 @@ fn it_copy_work() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let options = CopyOptions::new();
@@ -302,7 +301,7 @@ fn it_copy_not_folder() {
 
     let options = CopyOptions::new();
     path_from.push("test.txt");
-    fs_extra::file::write_all(&path_from, "test").unwrap();
+    fs_extra_rs::file::write_all(&path_from, "test").unwrap();
 
     match copy(&path_from, &path_to, &options) {
         Err(err) => match err.kind {
@@ -347,7 +346,7 @@ fn it_copy_source_not_exist() {
                 assert_eq!(wrong_path, err.to_string());
             }
             _ => {
-                panic!(format!("wrong error {}", err.to_string()));
+                panic!("wrong error {}", err.to_string());
             }
         },
         Ok(_) => {
@@ -374,7 +373,7 @@ fn it_copy_exist_overwrite() {
     let mut file1_path = path_from.clone();
     file1_path.push(same_file);
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -383,7 +382,7 @@ fn it_copy_exist_overwrite() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut exist_path = path_to.clone();
@@ -393,7 +392,7 @@ fn it_copy_exist_overwrite() {
     exist_path.push(same_file);
     let exist_content = "exist content";
     assert_ne!(exist_content, content1);
-    fs_extra::file::write_all(&exist_path, exist_content).unwrap();
+    fs_extra_rs::file::write_all(&exist_path, exist_content).unwrap();
     assert!(exist_path.exists());
 
     let mut options = CopyOptions::new();
@@ -424,7 +423,7 @@ fn it_copy_exist_not_overwrite() {
     let mut file1_path = path_from.clone();
     file1_path.push(same_file);
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut exist_path = path_to.clone();
@@ -434,7 +433,7 @@ fn it_copy_exist_not_overwrite() {
     exist_path.push(same_file);
     let exist_content = "exist content";
     assert_ne!(exist_content, content1);
-    fs_extra::file::write_all(&exist_path, exist_content).unwrap();
+    fs_extra_rs::file::write_all(&exist_path, exist_content).unwrap();
     assert!(exist_path.exists());
 
     let options = CopyOptions::new();
@@ -445,7 +444,7 @@ fn it_copy_exist_not_overwrite() {
                 assert_eq!(wrong_path, err.to_string());
             }
             _ => {
-                panic!(format!("wrong error {}", err.to_string()));
+                panic!("wrong error {}", err.to_string());
             }
         },
         Ok(_) => {
@@ -472,7 +471,7 @@ fn it_copy_exist_skip_exist() {
     let mut file1_path = path_from.clone();
     file1_path.push(same_file);
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -481,7 +480,7 @@ fn it_copy_exist_skip_exist() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut exist_path = path_to.clone();
@@ -491,7 +490,7 @@ fn it_copy_exist_skip_exist() {
     exist_path.push(same_file);
     let exist_content = "exist content";
     assert_ne!(exist_content, content1);
-    fs_extra::file::write_all(&exist_path, exist_content).unwrap();
+    fs_extra_rs::file::write_all(&exist_path, exist_content).unwrap();
     assert!(exist_path.exists());
 
     let mut options = CopyOptions::new();
@@ -501,7 +500,7 @@ fn it_copy_exist_skip_exist() {
     assert!(exist_path.exists());
     assert!(!files_eq(file1_path, &exist_path));
     assert_eq!(
-        fs_extra::file::read_to_string(exist_path).unwrap(),
+        fs_extra_rs::file::read_to_string(exist_path).unwrap(),
         exist_content
     );
 
@@ -527,7 +526,7 @@ fn it_copy_exist_overwrite_and_skip_exist() {
     let mut file1_path = path_from.clone();
     file1_path.push(same_file);
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -536,7 +535,7 @@ fn it_copy_exist_overwrite_and_skip_exist() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut exist_path = path_to.clone();
@@ -546,7 +545,7 @@ fn it_copy_exist_overwrite_and_skip_exist() {
     exist_path.push(same_file);
     let exist_content = "exist content";
     assert_ne!(exist_content, content1);
-    fs_extra::file::write_all(&exist_path, exist_content).unwrap();
+    fs_extra_rs::file::write_all(&exist_path, exist_content).unwrap();
     assert!(exist_path.exists());
 
     let mut options = CopyOptions::new();
@@ -596,11 +595,11 @@ fn it_copy_using_first_levels() {
     assert!(!d_level_4.1.exists());
     assert!(!d_level_5.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
-    fs_extra::file::write_all(&file3.0, "content3").unwrap();
-    fs_extra::file::write_all(&file4.0, "content4").unwrap();
-    fs_extra::file::write_all(&file5.0, "content5").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3.0, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file4.0, "content4").unwrap();
+    fs_extra_rs::file::write_all(&file5.0, "content5").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -682,11 +681,11 @@ fn it_copy_using_four_levels() {
     assert!(!d_level_4.1.exists());
     assert!(!d_level_5.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
-    fs_extra::file::write_all(&file3.0, "content3").unwrap();
-    fs_extra::file::write_all(&file4.0, "content4").unwrap();
-    fs_extra::file::write_all(&file5.0, "content5").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3.0, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file4.0, "content4").unwrap();
+    fs_extra_rs::file::write_all(&file5.0, "content5").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -760,9 +759,9 @@ fn it_copy_content_only_option() {
     assert!(!d_level_2.1.exists());
     assert!(!d_level_3.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
-    fs_extra::file::write_all(&file3.0, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3.0, "content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -816,7 +815,7 @@ fn it_copy_progress_work() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -825,7 +824,7 @@ fn it_copy_progress_work() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
@@ -867,7 +866,7 @@ fn it_copy_progress_work() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 
@@ -886,7 +885,7 @@ fn it_copy_with_progress_not_folder() {
 
     let options = CopyOptions::new();
     path_from.push("test.txt");
-    fs_extra::file::write_all(&path_from, "test").unwrap();
+    fs_extra_rs::file::write_all(&path_from, "test").unwrap();
     let func_test = |process_info: TransitProcess| {
         match process_info.state {
             TransitState::NoAccess => {}
@@ -930,7 +929,7 @@ fn it_copy_with_progress_work_dif_buf_size() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -939,7 +938,7 @@ fn it_copy_with_progress_work_dif_buf_size() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
@@ -992,7 +991,7 @@ fn it_copy_with_progress_work_dif_buf_size() {
 
         match result {
             Ok(_) => {}
-            Err(err) => panic!(err),
+            Err(err) => panic!("{:?}", err),
         }
     })
     .join();
@@ -1014,7 +1013,7 @@ fn it_copy_with_progress_work_dif_buf_size() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 #[test]
@@ -1048,7 +1047,7 @@ fn it_copy_with_progress_source_not_exist() {
                     assert_eq!(wrong_path, err.to_string());
                 }
                 _ => {
-                    panic!(format!("wrong error {}", err.to_string()));
+                    panic!("wrong error {}", err.to_string());
                 }
             },
             Ok(_) => {
@@ -1059,7 +1058,7 @@ fn it_copy_with_progress_source_not_exist() {
     .join();
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -1085,7 +1084,7 @@ fn it_copy_with_progress_exist_overwrite() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -1094,12 +1093,12 @@ fn it_copy_with_progress_exist_overwrite() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
     copy(&path_from, &path_to, &options).unwrap();
-    fs_extra::file::write_all(&file2_path, "another conntent").unwrap();
+    fs_extra_rs::file::write_all(&file2_path, "another conntent").unwrap();
 
     options.buffer_size = 1;
     options.overwrite = true;
@@ -1120,7 +1119,7 @@ fn it_copy_with_progress_exist_overwrite() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -1146,7 +1145,7 @@ fn it_copy_with_progress_exist_not_overwrite() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -1155,7 +1154,7 @@ fn it_copy_with_progress_exist_not_overwrite() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
@@ -1196,7 +1195,7 @@ fn it_copy_with_progress_exist_skip_exist() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -1205,13 +1204,13 @@ fn it_copy_with_progress_exist_skip_exist() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
     copy(&path_from, &path_to, &options).unwrap();
 
-    fs_extra::file::write_all(&file2_path, "another conntent").unwrap();
+    fs_extra_rs::file::write_all(&file2_path, "another conntent").unwrap();
     options.buffer_size = 1;
     options.skip_exist = true;
     let (tx, rx) = mpsc::channel();
@@ -1230,7 +1229,7 @@ fn it_copy_with_progress_exist_skip_exist() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -1256,7 +1255,7 @@ fn it_copy_with_progress_exist_overwrite_and_skip_exist() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -1265,12 +1264,12 @@ fn it_copy_with_progress_exist_overwrite_and_skip_exist() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
     copy(&path_from, &path_to, &options).unwrap();
-    fs_extra::file::write_all(&file2_path, "another conntent").unwrap();
+    fs_extra_rs::file::write_all(&file2_path, "another conntent").unwrap();
 
     options.buffer_size = 1;
     options.overwrite = true;
@@ -1292,7 +1291,7 @@ fn it_copy_with_progress_exist_overwrite_and_skip_exist() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.recv().unwrap();
 }
@@ -1333,11 +1332,11 @@ fn it_copy_with_progress_using_first_levels() {
     assert!(!d_level_4.1.exists());
     assert!(!d_level_5.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
-    fs_extra::file::write_all(&file3.0, "content3").unwrap();
-    fs_extra::file::write_all(&file4.0, "content4").unwrap();
-    fs_extra::file::write_all(&file5.0, "content5").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3.0, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file4.0, "content4").unwrap();
+    fs_extra_rs::file::write_all(&file5.0, "content5").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -1393,7 +1392,7 @@ fn it_copy_with_progress_using_first_levels() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -1438,11 +1437,11 @@ fn it_copy_with_progress_using_four_levels() {
     assert!(!d_level_4.1.exists());
     assert!(!d_level_5.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
-    fs_extra::file::write_all(&file3.0, "content3").unwrap();
-    fs_extra::file::write_all(&file4.0, "content4").unwrap();
-    fs_extra::file::write_all(&file5.0, "content5").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3.0, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file4.0, "content4").unwrap();
+    fs_extra_rs::file::write_all(&file5.0, "content5").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -1501,7 +1500,7 @@ fn it_copy_with_progress_using_four_levels() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -1534,9 +1533,9 @@ fn it_copy_with_progress_content_only_option() {
     assert!(!d_level_2.1.exists());
     assert!(!d_level_3.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
-    fs_extra::file::write_all(&file3.0, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3.0, "content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -1582,7 +1581,7 @@ fn it_copy_with_progress_content_only_option() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -1602,8 +1601,8 @@ fn it_copy_inside_work_target_dir_not_exist() {
     let file2 = root_dir1_sub.join("file2.txt");
 
     create_all(&root_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
 
     if root_dir2.exists() {
         remove(&root_dir2).unwrap();
@@ -1642,9 +1641,9 @@ fn it_copy_inside_work_target_dir_exist_with_no_source_dir_named_sub_dir() {
 
     create_all(&root_dir1_sub, true).unwrap();
     create_all(&root_dir2_dir3, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content2").unwrap();
-    fs_extra::file::write_all(&file3, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content3").unwrap();
 
     if root_dir2_dir1.exists() {
         remove(&root_dir2_dir1).unwrap();
@@ -1692,11 +1691,11 @@ fn it_copy_inside_work_target_dir_exist_with_source_dir_exist() {
     create_all(&root_dir2_dir3, true).unwrap();
     create_all(&root_dir2_dir1, true).unwrap();
     create_all(&root_dir2_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content2").unwrap();
-    fs_extra::file::write_all(&file3, "content3").unwrap();
-    fs_extra::file::write_all(&old_file1, "old_content1").unwrap();
-    fs_extra::file::write_all(&old_file2, "old_content2").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content3").unwrap();
+    fs_extra_rs::file::write_all(&old_file1, "old_content1").unwrap();
+    fs_extra_rs::file::write_all(&old_file2, "old_content2").unwrap();
 
     assert!(root_dir1.exists());
     assert!(root_dir1_sub.exists());
@@ -1718,7 +1717,7 @@ fn it_copy_inside_work_target_dir_exist_with_source_dir_exist() {
                 assert_eq!(1, 1);
             }
             _ => {
-                panic!(format!("wrong error {}", err.to_string()));
+                panic!("wrong error {}", err.to_string());
             }
         },
         Ok(_) => {
@@ -1798,7 +1797,7 @@ fn it_move_work() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -1807,7 +1806,7 @@ fn it_move_work() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let options = CopyOptions::new();
@@ -1833,7 +1832,7 @@ fn it_move_not_folder() {
 
     let options = CopyOptions::new();
     path_from.push("test.txt");
-    fs_extra::file::write_all(&path_from, "test").unwrap();
+    fs_extra_rs::file::write_all(&path_from, "test").unwrap();
 
     match move_dir(&path_from, &path_to, &options) {
         Err(err) => match err.kind {
@@ -1875,7 +1874,7 @@ fn it_move_source_not_exist() {
                 assert_eq!(wrong_path, err.to_string());
             }
             _ => {
-                panic!(format!("wrong error {}", err.to_string()));
+                panic!("wrong error {}", err.to_string());
             }
         },
         Ok(_) => {
@@ -1902,7 +1901,7 @@ fn it_move_exist_overwrite() {
     let mut file1_path = path_from.clone();
     file1_path.push(same_file);
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -1911,7 +1910,7 @@ fn it_move_exist_overwrite() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut exist_path = path_to.clone();
@@ -1921,7 +1920,7 @@ fn it_move_exist_overwrite() {
     exist_path.push(same_file);
     let exist_content = "exist content";
     assert_ne!(exist_content, content1);
-    fs_extra::file::write_all(&exist_path, exist_content).unwrap();
+    fs_extra_rs::file::write_all(&exist_path, exist_content).unwrap();
     assert!(exist_path.exists());
 
     let mut options = CopyOptions::new();
@@ -1951,7 +1950,7 @@ fn it_move_exist_not_overwrite() {
     let mut file1_path = path_from.clone();
     file1_path.push(same_file);
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut exist_path = path_to.clone();
@@ -1961,7 +1960,7 @@ fn it_move_exist_not_overwrite() {
     exist_path.push(same_file);
     let exist_content = "exist content";
     assert_ne!(exist_content, content1);
-    fs_extra::file::write_all(&exist_path, exist_content).unwrap();
+    fs_extra_rs::file::write_all(&exist_path, exist_content).unwrap();
     assert!(exist_path.exists());
 
     let options = CopyOptions::new();
@@ -1972,7 +1971,7 @@ fn it_move_exist_not_overwrite() {
                 assert_eq!(wrong_path, err.to_string());
             }
             _ => {
-                panic!(format!("wrong error {}", err.to_string()));
+                panic!("wrong error {}", err.to_string());
             }
         },
         Ok(_) => {
@@ -1999,7 +1998,7 @@ fn it_move_exist_skip_exist() {
     let mut file1_path = path_from.clone();
     file1_path.push(same_file);
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -2008,7 +2007,7 @@ fn it_move_exist_skip_exist() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut exist_path = path_to.clone();
@@ -2018,7 +2017,7 @@ fn it_move_exist_skip_exist() {
     exist_path.push(same_file);
     let exist_content = "exist content";
     assert_ne!(exist_content, content1);
-    fs_extra::file::write_all(&exist_path, exist_content).unwrap();
+    fs_extra_rs::file::write_all(&exist_path, exist_content).unwrap();
     assert!(exist_path.exists());
 
     let mut options = CopyOptions::new();
@@ -2027,7 +2026,7 @@ fn it_move_exist_skip_exist() {
 
     assert!(exist_path.exists());
     assert_eq!(
-        fs_extra::file::read_to_string(exist_path).unwrap(),
+        fs_extra_rs::file::read_to_string(exist_path).unwrap(),
         exist_content
     );
 
@@ -2052,7 +2051,7 @@ fn it_move_exist_overwrite_and_skip_exist() {
     let mut file1_path = path_from.clone();
     file1_path.push(same_file);
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -2061,7 +2060,7 @@ fn it_move_exist_overwrite_and_skip_exist() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut exist_path = path_to.clone();
@@ -2071,7 +2070,7 @@ fn it_move_exist_overwrite_and_skip_exist() {
     exist_path.push(same_file);
     let exist_content = "exist content";
     assert_ne!(exist_content, content1);
-    fs_extra::file::write_all(&exist_path, exist_content).unwrap();
+    fs_extra_rs::file::write_all(&exist_path, exist_content).unwrap();
     assert!(exist_path.exists());
 
     let mut options = CopyOptions::new();
@@ -2095,8 +2094,8 @@ fn it_move_inside_work_target_dir_not_exist() {
     let file2 = root_dir1_sub.join("file2.txt");
 
     create_all(&root_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
 
     if root_dir2.exists() {
         remove(&root_dir2).unwrap();
@@ -2139,9 +2138,9 @@ fn it_move_inside_work_target_dir_exist_with_no_source_dir_named_sub_dir() {
 
     create_all(&root_dir1_sub, true).unwrap();
     create_all(&root_dir2_dir3, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content2").unwrap();
-    fs_extra::file::write_all(&file3, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content3").unwrap();
 
     if root_dir2_dir1.exists() {
         remove(&root_dir2_dir1).unwrap();
@@ -2195,11 +2194,11 @@ fn it_move_inside_work_target_dir_exist_with_source_dir_exist() {
     create_all(&root_dir2_dir3, true).unwrap();
     create_all(&root_dir2_dir1, true).unwrap();
     create_all(&root_dir2_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content2").unwrap();
-    fs_extra::file::write_all(&file3, "content3").unwrap();
-    fs_extra::file::write_all(&old_file1, "old_content1").unwrap();
-    fs_extra::file::write_all(&old_file2, "old_content2").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content3").unwrap();
+    fs_extra_rs::file::write_all(&old_file1, "old_content1").unwrap();
+    fs_extra_rs::file::write_all(&old_file2, "old_content2").unwrap();
 
     assert!(root_dir1.exists());
     assert!(root_dir1_sub.exists());
@@ -2221,7 +2220,7 @@ fn it_move_inside_work_target_dir_exist_with_source_dir_exist() {
                 assert_eq!(1, 1);
             }
             _ => {
-                panic!(format!("wrong error {}", err.to_string()));
+                panic!("wrong error {}", err.to_string());
             }
         },
         Ok(_) => {
@@ -2269,9 +2268,9 @@ fn it_move_content_only_option() {
     assert!(!d_level_2.1.exists());
     assert!(!d_level_3.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
-    fs_extra::file::write_all(&file3.0, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3.0, "content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -2320,7 +2319,7 @@ fn it_move_progress_work() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -2329,7 +2328,7 @@ fn it_move_progress_work() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
@@ -2371,7 +2370,7 @@ fn it_move_progress_work() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 
@@ -2390,7 +2389,7 @@ fn it_move_with_progress_not_folder() {
 
     let options = CopyOptions::new();
     path_from.push("test.txt");
-    fs_extra::file::write_all(&path_from, "test").unwrap();
+    fs_extra_rs::file::write_all(&path_from, "test").unwrap();
     let func_test = |process_info: TransitProcess| {
         match process_info.state {
             TransitState::NoAccess => {}
@@ -2435,7 +2434,7 @@ fn it_move_with_progress_work_dif_buf_size() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content1";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -2444,7 +2443,7 @@ fn it_move_with_progress_work_dif_buf_size() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
@@ -2468,7 +2467,7 @@ fn it_move_with_progress_work_dif_buf_size() {
         let mut file1_path = path_from.clone();
         file1_path.push("test1.txt");
         let content1 = "content1";
-        fs_extra::file::write_all(&file1_path, &content1).unwrap();
+        fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
         assert!(file1_path.exists());
 
         let mut sub_dir_path = path_from.clone();
@@ -2477,7 +2476,7 @@ fn it_move_with_progress_work_dif_buf_size() {
         let mut file2_path = sub_dir_path.clone();
         file2_path.push("test2.txt");
         let content2 = "content2";
-        fs_extra::file::write_all(&file2_path, &content2).unwrap();
+        fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
         assert!(file2_path.exists());
 
         let mut options = CopyOptions::new();
@@ -2513,7 +2512,7 @@ fn it_move_with_progress_work_dif_buf_size() {
 
         match result {
             Ok(_) => {}
-            Err(err) => panic!(err),
+            Err(err) => panic!("{:?}", err),
         }
     })
     .join();
@@ -2535,7 +2534,7 @@ fn it_move_with_progress_work_dif_buf_size() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 #[test]
@@ -2569,7 +2568,7 @@ fn it_move_with_progress_source_not_exist() {
                     assert_eq!(wrong_path, err.to_string());
                 }
                 _ => {
-                    panic!(format!("wrong error {}", err.to_string()));
+                    panic!("wrong error {}", err.to_string());
                 }
             },
             Ok(_) => {
@@ -2580,7 +2579,7 @@ fn it_move_with_progress_source_not_exist() {
     .join();
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -2606,7 +2605,7 @@ fn it_move_with_progress_exist_overwrite() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -2615,12 +2614,12 @@ fn it_move_with_progress_exist_overwrite() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
     copy(&path_from, &path_to, &options).unwrap();
-    fs_extra::file::write_all(&file2_path, "another conntent").unwrap();
+    fs_extra_rs::file::write_all(&file2_path, "another conntent").unwrap();
 
     options.buffer_size = 1;
     options.overwrite = true;
@@ -2641,7 +2640,7 @@ fn it_move_with_progress_exist_overwrite() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.recv().unwrap();
 }
@@ -2663,7 +2662,7 @@ fn it_move_with_progress_exist_not_overwrite() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -2672,7 +2671,7 @@ fn it_move_with_progress_exist_not_overwrite() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
@@ -2699,7 +2698,7 @@ fn it_move_with_progress_exist_not_overwrite() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -2727,7 +2726,7 @@ fn it_move_with_progress_exist_skip_exist() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -2736,13 +2735,13 @@ fn it_move_with_progress_exist_skip_exist() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
     copy(&path_from, &path_to, &options).unwrap();
 
-    fs_extra::file::write_all(&file2_path, "another conntent").unwrap();
+    fs_extra_rs::file::write_all(&file2_path, "another conntent").unwrap();
     options.buffer_size = 1;
     options.skip_exist = true;
     let (tx, rx) = mpsc::channel();
@@ -2762,7 +2761,7 @@ fn it_move_with_progress_exist_skip_exist() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -2788,7 +2787,7 @@ fn it_move_with_progress_exist_overwrite_and_skip_exist() {
     let mut file1_path = path_from.clone();
     file1_path.push("test1.txt");
     let content1 = "content";
-    fs_extra::file::write_all(&file1_path, &content1).unwrap();
+    fs_extra_rs::file::write_all(&file1_path, &content1).unwrap();
     assert!(file1_path.exists());
 
     let mut sub_dir_path = path_from.clone();
@@ -2797,12 +2796,12 @@ fn it_move_with_progress_exist_overwrite_and_skip_exist() {
     let mut file2_path = sub_dir_path.clone();
     file2_path.push("test2.txt");
     let content2 = "content2";
-    fs_extra::file::write_all(&file2_path, &content2).unwrap();
+    fs_extra_rs::file::write_all(&file2_path, &content2).unwrap();
     assert!(file2_path.exists());
 
     let mut options = CopyOptions::new();
     copy(&path_from, &path_to, &options).unwrap();
-    fs_extra::file::write_all(&file2_path, "another conntent").unwrap();
+    fs_extra_rs::file::write_all(&file2_path, "another conntent").unwrap();
 
     options.buffer_size = 1;
     options.overwrite = true;
@@ -2824,7 +2823,7 @@ fn it_move_with_progress_exist_overwrite_and_skip_exist() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.recv().unwrap();
 }
@@ -2840,7 +2839,7 @@ fn it_get_folder_size() {
 
     let mut file1 = path.clone();
     file1.push("test1.txt");
-    fs_extra::file::write_all(&file1, &"A".repeat(100)).unwrap();
+    fs_extra_rs::file::write_all(&file1, &"A".repeat(100)).unwrap();
     assert!(file1.exists());
 
     let mut sub_dir_path = path.clone();
@@ -2849,7 +2848,7 @@ fn it_get_folder_size() {
 
     let mut file2 = sub_dir_path.clone();
     file2.push("test2.txt");
-    fs_extra::file::write_all(&file2, &"B".repeat(300)).unwrap();
+    fs_extra_rs::file::write_all(&file2, &"B".repeat(300)).unwrap();
     assert!(file2.exists());
 
     let symlink_file = sub_dir_path.join("symlink_file.txt");
@@ -2858,8 +2857,9 @@ fn it_get_folder_size() {
     #[cfg(any(unix, windows))]
     {
         // Only passing the filename since we want this to be a relative symlink.
-        create_file_symlink("test2.txt", &symlink_file).unwrap();
-        assert!(symlink_file.exists());
+        if create_file_symlink("test2.txt", &symlink_file).is_ok() {
+            assert!(symlink_file.exists());
+        }
     }
 
     // Total size comprises of:
@@ -2888,7 +2888,7 @@ fn it_get_file_size() {
 
     let mut file = path.clone();
     file.push("test1.txt");
-    fs_extra::file::write_all(&file, "content").unwrap();
+    fs_extra_rs::file::write_all(&file, "content").unwrap();
     assert!(file.exists());
 
     let result = get_size(&path).unwrap();
@@ -2923,7 +2923,7 @@ fn it_get_dir_content() {
 
     let mut file1 = path.clone();
     file1.push("test1.txt");
-    fs_extra::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
     assert!(file1.exists());
 
     let mut sub_dir_path = path.clone();
@@ -2931,7 +2931,7 @@ fn it_get_dir_content() {
     create(&sub_dir_path, true).unwrap();
     let mut file2 = sub_dir_path.clone();
     file2.push("test2.txt");
-    fs_extra::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
     assert!(file2.exists());
 
     let result = get_dir_content(&path).unwrap();
@@ -2989,11 +2989,11 @@ fn it_get_dir_content_many_levels() {
     assert!(&d_level_4.exists());
     assert!(&d_level_5.exists());
 
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content2").unwrap();
-    fs_extra::file::write_all(&file3, "content3").unwrap();
-    fs_extra::file::write_all(&file4, "content4").unwrap();
-    fs_extra::file::write_all(&file5, "content5").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file4, "content4").unwrap();
+    fs_extra_rs::file::write_all(&file5, "content5").unwrap();
 
     let mut options = DirOptions::new();
     let result = get_dir_content2(&d_level_1, &options).unwrap();
@@ -3115,7 +3115,7 @@ fn it_get_dir_content_path_file() {
 
     let mut file = path.clone();
     file.push("test1.txt");
-    fs_extra::file::write_all(&file, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file, "content1").unwrap();
     assert!(file.exists());
 
     let result = get_dir_content(&file).unwrap();
@@ -3237,7 +3237,7 @@ fn it_details_file_item() {
     let test_dir = Path::new(TEST_FOLDER).join("it_details_file_item");
     create_all(&test_dir, true).unwrap();
     let file = test_dir.join("file.txt");
-    fs_extra::file::write_all(&file, "content").unwrap();
+    fs_extra_rs::file::write_all(&file, "content").unwrap();
     assert!(file.exists());
     let mut config = HashSet::new();
     config.insert(DirEntryAttr::Name);
@@ -3359,7 +3359,7 @@ fn it_details_item_file_short() {
     let test_dir = Path::new(TEST_FOLDER).join("it_details_item_short");
     create_all(&test_dir, true).unwrap();
     let file = test_dir.join("file.txt");
-    fs_extra::file::write_all(&file, "content").unwrap();
+    fs_extra_rs::file::write_all(&file, "content").unwrap();
     assert!(file.exists());
     let mut config = HashSet::new();
     config.insert(DirEntryAttr::Name);
@@ -3385,8 +3385,8 @@ fn it_ls() {
     create_all(&test_dir, true).unwrap();
     let file1 = test_dir.join("file1.txt");
     let file2 = test_dir.join("file2.txt");
-    fs_extra::file::write_all(&file1, "content").unwrap();
-    fs_extra::file::write_all(&file2, "content").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content").unwrap();
     assert!(file1.exists());
     assert!(file2.exists());
     let mut config = HashSet::new();
@@ -3446,11 +3446,11 @@ fn it_copy_with_progress_exist_user_decide_overwrite() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -3490,7 +3490,7 @@ fn it_copy_with_progress_exist_user_decide_overwrite() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -3510,11 +3510,11 @@ fn it_copy_with_progress_exist_user_decide_overwrite_all() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -3554,7 +3554,7 @@ fn it_copy_with_progress_exist_user_decide_overwrite_all() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -3573,11 +3573,11 @@ fn it_copy_with_progress_exist_user_decide_skip() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -3617,7 +3617,7 @@ fn it_copy_with_progress_exist_user_decide_skip() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -3636,11 +3636,11 @@ fn it_copy_with_progress_exist_user_decide_skip_all() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -3680,7 +3680,7 @@ fn it_copy_with_progress_exist_user_decide_skip_all() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -3699,11 +3699,11 @@ fn it_copy_with_progress_exist_user_decide_retry() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -3747,7 +3747,7 @@ fn it_copy_with_progress_exist_user_decide_retry() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -3763,8 +3763,8 @@ fn it_copy_with_progress_inside_work_target_dir_not_exist() {
     let file2 = root_dir1_sub.join("file2.txt");
 
     create_all(&root_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content").unwrap();
-    fs_extra::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
 
     if root_dir2.exists() {
         remove(&root_dir2).unwrap();
@@ -3817,7 +3817,7 @@ fn it_copy_with_progress_inside_work_target_dir_not_exist() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 
@@ -3838,9 +3838,9 @@ fn it_copy_with_progress_inside_work_target_dir_exist_with_no_source_dir_named_s
 
     create_all(&root_dir1_sub, true).unwrap();
     create_all(&root_dir2_dir3, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content22").unwrap();
-    fs_extra::file::write_all(&file3, "content333").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content22").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content333").unwrap();
 
     if root_dir2_dir1.exists() {
         remove(&root_dir2_dir1).unwrap();
@@ -3898,7 +3898,7 @@ fn it_copy_with_progress_inside_work_target_dir_exist_with_no_source_dir_named_s
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 
@@ -3924,11 +3924,11 @@ fn it_copy_with_progress_inside_no_overwrite_work_target_dir_exist_with_source_d
     create_all(&root_dir2_dir3, true).unwrap();
     create_all(&root_dir2_dir1, true).unwrap();
     create_all(&root_dir2_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content22").unwrap();
-    fs_extra::file::write_all(&file3, "content333").unwrap();
-    fs_extra::file::write_all(&old_file1, "old_content1").unwrap();
-    fs_extra::file::write_all(&old_file2, "old_content22").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content22").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content333").unwrap();
+    fs_extra_rs::file::write_all(&old_file1, "old_content1").unwrap();
+    fs_extra_rs::file::write_all(&old_file2, "old_content22").unwrap();
 
     assert!(root_dir1.exists());
     assert!(root_dir1_sub.exists());
@@ -3987,7 +3987,7 @@ fn it_copy_with_progress_inside_no_overwrite_work_target_dir_exist_with_source_d
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 
@@ -4012,11 +4012,11 @@ fn it_copy_with_progress_inside_overwrite_work_target_dir_exist_with_source_dir_
     create_all(&root_dir2_dir3, true).unwrap();
     create_all(&root_dir2_dir1, true).unwrap();
     create_all(&root_dir2_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content22").unwrap();
-    fs_extra::file::write_all(&file3, "content333").unwrap();
-    fs_extra::file::write_all(&old_file1, "old_content1").unwrap();
-    fs_extra::file::write_all(&old_file2, "old_content22").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content22").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content333").unwrap();
+    fs_extra_rs::file::write_all(&old_file1, "old_content1").unwrap();
+    fs_extra_rs::file::write_all(&old_file2, "old_content22").unwrap();
 
     assert!(root_dir1.exists());
     assert!(root_dir1_sub.exists());
@@ -4075,7 +4075,7 @@ fn it_copy_with_progress_inside_overwrite_work_target_dir_exist_with_source_dir_
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 
@@ -4093,11 +4093,11 @@ fn it_move_with_progress_exist_user_decide_overwrite() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -4136,7 +4136,7 @@ fn it_move_with_progress_exist_user_decide_overwrite() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -4156,11 +4156,11 @@ fn it_move_with_progress_exist_user_decide_overwrite_all() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -4199,7 +4199,7 @@ fn it_move_with_progress_exist_user_decide_overwrite_all() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -4218,11 +4218,11 @@ fn it_move_with_progress_exist_user_decide_skip() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -4261,7 +4261,7 @@ fn it_move_with_progress_exist_user_decide_skip() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -4280,11 +4280,11 @@ fn it_move_with_progress_exist_user_decide_skip_all() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -4323,7 +4323,7 @@ fn it_move_with_progress_exist_user_decide_skip_all() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -4342,11 +4342,11 @@ fn it_move_with_progress_exist_user_decide_retry() {
     assert!(&dir.0.exists());
     assert!(&dir.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
 
-    fs_extra::file::write_all(&file1.1, "old content7").unwrap();
-    fs_extra::file::write_all(&file2.1, "old content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.1, "old content7").unwrap();
+    fs_extra_rs::file::write_all(&file2.1, "old content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -4389,7 +4389,7 @@ fn it_move_with_progress_exist_user_decide_retry() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
     rx.try_recv().unwrap();
 }
@@ -4405,8 +4405,8 @@ fn it_move_dir_with_progress_inside_work_target_dir_not_exist() {
     let file2 = root_dir1_sub.join("file2.txt");
 
     create_all(&root_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content").unwrap();
-    fs_extra::file::write_all(&file2, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content2").unwrap();
 
     if root_dir2.exists() {
         remove(&root_dir2).unwrap();
@@ -4463,7 +4463,7 @@ fn it_move_dir_with_progress_inside_work_target_dir_not_exist() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 
@@ -4484,9 +4484,9 @@ fn it_move_dir_with_progress_inside_work_target_dir_exist_with_no_source_dir_nam
 
     create_all(&root_dir1_sub, true).unwrap();
     create_all(&root_dir2_dir3, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content22").unwrap();
-    fs_extra::file::write_all(&file3, "content333").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content22").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content333").unwrap();
 
     if root_dir2_dir1.exists() {
         remove(&root_dir2_dir1).unwrap();
@@ -4550,7 +4550,7 @@ fn it_move_dir_with_progress_inside_work_target_dir_exist_with_no_source_dir_nam
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 
@@ -4576,11 +4576,11 @@ fn it_move_dir_with_progress_inside_no_overwrite_work_target_dir_exist_with_sour
     create_all(&root_dir2_dir3, true).unwrap();
     create_all(&root_dir2_dir1, true).unwrap();
     create_all(&root_dir2_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content22").unwrap();
-    fs_extra::file::write_all(&file3, "content333").unwrap();
-    fs_extra::file::write_all(&old_file1, "old_content1").unwrap();
-    fs_extra::file::write_all(&old_file2, "old_content22").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content22").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content333").unwrap();
+    fs_extra_rs::file::write_all(&old_file1, "old_content1").unwrap();
+    fs_extra_rs::file::write_all(&old_file2, "old_content22").unwrap();
 
     assert!(root_dir1.exists());
     assert!(root_dir1_sub.exists());
@@ -4649,7 +4649,7 @@ fn it_move_dir_with_progress_inside_no_overwrite_work_target_dir_exist_with_sour
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 
@@ -4675,11 +4675,11 @@ fn it_move_dir_with_progress_inside_overwrite_work_target_dir_exist_with_source_
     create_all(&root_dir2_dir3, true).unwrap();
     create_all(&root_dir2_dir1, true).unwrap();
     create_all(&root_dir2_dir1_sub, true).unwrap();
-    fs_extra::file::write_all(&file1, "content1").unwrap();
-    fs_extra::file::write_all(&file2, "content22").unwrap();
-    fs_extra::file::write_all(&file3, "content333").unwrap();
-    fs_extra::file::write_all(&old_file1, "old_content1").unwrap();
-    fs_extra::file::write_all(&old_file2, "old_content22").unwrap();
+    fs_extra_rs::file::write_all(&file1, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2, "content22").unwrap();
+    fs_extra_rs::file::write_all(&file3, "content333").unwrap();
+    fs_extra_rs::file::write_all(&old_file1, "old_content1").unwrap();
+    fs_extra_rs::file::write_all(&old_file2, "old_content22").unwrap();
 
     assert!(root_dir1.exists());
     assert!(root_dir1_sub.exists());
@@ -4744,7 +4744,7 @@ fn it_move_dir_with_progress_inside_overwrite_work_target_dir_exist_with_source_
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 }
 #[test]
@@ -4772,9 +4772,9 @@ fn it_move_with_progress_content_only_option() {
     assert!(!d_level_2.1.exists());
     assert!(!d_level_3.1.exists());
 
-    fs_extra::file::write_all(&file1.0, "content1").unwrap();
-    fs_extra::file::write_all(&file2.0, "content2").unwrap();
-    fs_extra::file::write_all(&file3.0, "content3").unwrap();
+    fs_extra_rs::file::write_all(&file1.0, "content1").unwrap();
+    fs_extra_rs::file::write_all(&file2.0, "content2").unwrap();
+    fs_extra_rs::file::write_all(&file3.0, "content3").unwrap();
 
     assert!(file1.0.exists());
     assert!(file2.0.exists());
@@ -4817,7 +4817,7 @@ fn it_move_with_progress_content_only_option() {
 
     match result {
         Ok(_) => {}
-        Err(err) => panic!(err),
+        Err(err) => panic!("{:?}", err),
     }
 
     match rx.recv() {
@@ -4825,3 +4825,5 @@ fn it_move_with_progress_content_only_option() {
         _ => {}
     }
 }
+
+
